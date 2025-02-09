@@ -11,17 +11,16 @@ import {
   FaShoppingCart,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-
+import Logo from "../../assets/images/SL.svg";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md p-4">
+    <nav className="bg-white container p-2 sm:p-0 mx-auto  ">
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-indigo-600 text-2xl font-bold">
-          <span className="inline-block transform rotate-45">~</span>
-        </Link>
+        <img src={Logo} width={100} alt="logo" />
+
         <div className="hidden md:flex space-x-6 items-center mx-auto">
           <div
             className="relative"

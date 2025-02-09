@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@font-face {
+    font-family: Mister;
+    src: url(./assets/fonts/MisterDreamDemoRegular.ttf);
+}
+
+body {
+    font-family: Mister;
+}
