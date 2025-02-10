@@ -60,7 +60,7 @@ const Index: React.FC = () => {
         collapsible
         collapsed={collapsed}
       >
-        <img src={logo} alt="Logo" />
+        <img src={logo} width={100} className="mx-auto" alt="Logo" />
         <Menu
           theme="dark"
           mode="inline"
