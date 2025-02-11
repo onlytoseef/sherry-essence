@@ -17,3 +17,12 @@ h2,
 h3 {
     font-family: Mister;
 }
+
+.hero {
+    background-image: url(./assets/images/LandingPage/Vector.svg), url(./assets/images/LandingPage/landingShadow.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+
+}

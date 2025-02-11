@@ -16,11 +16,13 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
-    <nav className="bg-white container p-2 sm:p-0 mx-auto  ">
+    <nav className="bg-tranparent sticky top-0 z-50 container px-4 md:px-8 lg:px-16 p-2 sm:p-0 mx-auto backdrop-blur-lg  ">
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-5xl font-extrabold p-4 bg-gradient-to-r from-[#c47b3b] to-[#b87333] bg-clip-text text-transparent">
-          ShaRlix
-        </h1>
+        <Link to="/">
+          <h1 className="text-5xl font-extrabold p-4 bg-gradient-to-r from-[#c47b3b] to-[#b87333] bg-clip-text text-transparent">
+            ShaRlix
+          </h1>
+        </Link>
 
         <div className="hidden md:flex space-x-6 items-center mx-auto">
           <div
@@ -28,50 +30,14 @@ const Header = () => {
             onMouseEnter={() => setDropdownOpen(true)}
             onMouseLeave={() => setDropdownOpen(false)}
             onClick={() => setDropdownOpen(!dropdownOpen)}
-          >
-            <button className="text-gray-700 font-semibold">Product ▾</button>
-            {dropdownOpen && (
-              <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4">
-                <Link
-                  className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-md"
-                  to="/analytics"
-                >
-                  <FaChartPie /> <span>Analytics</span>
-                </Link>
-                <Link
-                  className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-md"
-                  to="/engagement"
-                >
-                  <FaComments /> <span>Engagement</span>
-                </Link>
-                <Link
-                  className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-md"
-                  to="/security"
-                >
-                  <FaLock /> <span>Security</span>
-                </Link>
-                <Link
-                  className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-md"
-                  to="/integrations"
-                >
-                  <FaCogs /> <span>Integrations</span>
-                </Link>
-                <Link
-                  className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-md"
-                  to="/automations"
-                >
-                  <FaSync /> <span>Automations</span>
-                </Link>
-              </div>
-            )}
-          </div>
-          <Link to="/features" className="text-gray-700 font-semibold">
+          ></div>
+          <Link to="/features" className="text-white font-semibold">
             Features
           </Link>
-          <Link to="/marketplace" className="text-gray-700 font-semibold">
+          <Link to="/marketplace" className="text-white font-semibold">
             Marketplace
           </Link>
-          <Link to="/company" className="text-gray-700 font-semibold">
+          <Link to="/company" className="text-white font-semibold">
             Company
           </Link>
         </div>
