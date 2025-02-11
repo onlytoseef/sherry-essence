@@ -11,7 +11,6 @@ import {
   FaShoppingCart,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import Logo from "../../assets/images/SL.svg";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -19,7 +18,9 @@ const Header = () => {
   return (
     <nav className="bg-white container p-2 sm:p-0 mx-auto  ">
       <div className="container mx-auto flex justify-between items-center">
-        <img src={Logo} width={100} alt="logo" />
+        <h1 className="text-5xl font-extrabold p-4 bg-gradient-to-r from-[#c47b3b] to-[#b87333] bg-clip-text text-transparent">
+          ShaRlix
+        </h1>
 
         <div className="hidden md:flex space-x-6 items-center mx-auto">
           <div

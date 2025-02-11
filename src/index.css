@@ -5,6 +5,15 @@
     src: url(./assets/fonts/MisterDreamDemoRegular.ttf);
 }
 
-body {
-    font-family: "Outfit",
+p,
+div {
+    font-family: "Outfit", serif;
+    font-optical-sizing: auto;
+
+}
+
+h1,
+h2,
+h3 {
+    font-family: Mister;
 }
