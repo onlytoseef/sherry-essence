@@ -6,6 +6,7 @@ export default function Index() {
     <Routes>
       <Route path="/*" element={<Frontend />} />
       <Route path="/admin/*" element={<Admin />} />
+
       <Route />
     </Routes>
   );
