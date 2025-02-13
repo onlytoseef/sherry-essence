@@ -35,36 +35,36 @@ const Header = () => {
 
         <div className="hidden md:flex space-x-6 items-center mx-auto">
           <Link
-            to="/features"
-            className={`font-semibold ${
-              scrolled ? "text-white" : "text-black"
-            }`}
+            to="/shop"
+            className={`font- ${scrolled ? "text-white" : "text-black"}`}
           >
-            Features
+            Shop
           </Link>
           <Link
-            to="/marketplace"
-            className={`font-semibold ${
-              scrolled ? "text-white" : "text-black"
-            }`}
+            to="/about"
+            className={`font- ${scrolled ? "text-white" : "text-black"}`}
           >
-            Marketplace
+            About Us
           </Link>
           <Link
-            to="/company"
-            className={`font-semibold ${
-              scrolled ? "text-white" : "text-black"
-            }`}
+            to="/service"
+            className={`font- ${scrolled ? "text-white" : "text-black"}`}
           >
-            Company
+            Services
+          </Link>
+          <Link
+            to="/contact"
+            className={`font- ${scrolled ? "text-white" : "text-black"}`}
+          >
+            Contact
           </Link>
         </div>
         <div className="flex items-center space-x-4">
           <Link to="/login" className={scrolled ? "text-white" : "text-black"}>
-            <FaUser size={20} />
+            <FaUser size={15} />
           </Link>
           <Link to="/cart" className={scrolled ? "text-white" : "text-black"}>
-            <FaShoppingCart size={20} />
+            <FaShoppingCart size={15} />
           </Link>
           <div className="md:hidden">
             <button onClick={() => setIsOpen(!isOpen)}>

@@ -15,10 +15,10 @@ export default function ValuesSection() {
         </div>
 
         {/* Text Section */}
-        <div className="md:w-1/2 w-full text-white px-6 md:px-12 text-center md:text-left">
+        <div className="md:w-1/2 w-full  text-white px-6 md:px-12 text-center md:text-left">
           {/* Heading with Staggered Fade Animation (Triggers on Scroll) */}
           <motion.h1
-            className="text-3xl md:text-5xl font-bold mb-6"
+            className="text-3xl text-center md:text-5xl font-bold mb-6"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: false, amount: 0.5 }} // Triggers when 50% of the section is in view
