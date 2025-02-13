@@ -26,3 +26,28 @@ h3 {
 
 
 }
+
+.welcome {
+    position: relative;
+    background-image: url(./assets/images/welcomeSection/welcome.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.welcome::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Adjust opacity for more or less fade */
+}
+
+.value-section {
+    background-image: url(./assets/images/LandingPage/Vector.svg);
+    background-repeat: no-repeat;
+    background-position: right;
+}
