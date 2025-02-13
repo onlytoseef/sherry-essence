@@ -1,4 +1,5 @@
 import bottle from "../../../assets/images/LandingPage/bottle.svg";
+import ProductSection from "../../../components/ProductSection";
 import ValuesSection from "../../../components/ValuesSection";
 import WelcomeSection from "../../../components/WelcomeSection";
 
@@ -27,6 +28,7 @@ export default function Home() {
       </div>
       <WelcomeSection />
       <ValuesSection />
+      <ProductSection />
     </main>
   );
 }

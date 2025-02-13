@@ -22,7 +22,7 @@ const Header = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-50 shadow-xl container px-4 md:px-8 lg:px-16 p-2 sm:p-0 mx-auto backdrop-blur-lg transition-all duration-300 ${
+      className={`sticky top-0 z-50 shadow-xl  px-4 md:px-8 lg:px-16 p-2 sm:p-0 mx-auto backdrop-blur-lg transition-all duration-300 ${
         scrolled ? "bg-transparent" : "bg-transparent"
       }`}
     >
