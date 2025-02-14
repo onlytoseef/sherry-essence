@@ -70,3 +70,7 @@ h3 {
 .hover-underline:hover::after {
     width: 100%;
 }
+
+html {
+    scroll-behavior: smooth;
+}
