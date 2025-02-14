@@ -6,7 +6,7 @@ import WelcomeSection from "../../../components/WelcomeSection";
 export default function Home() {
   return (
     <main>
-      <div className="bg-black hero h-screen flex justify-center items-center">
+      <div className="bg-[black] hero h-screen flex justify-center items-center">
         <div className="container px-4 md:px-8 lg:px-16 flex items-center justify-between">
           <div className="left-side max-w-2xl text-white">
             <h1 className="text-6xl font-bold">Elevate Your Spirit With</h1>

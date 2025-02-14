@@ -60,7 +60,10 @@ const Header = () => {
           </Link>
         </div>
         <div className="flex items-center space-x-4">
-          <Link to="/login" className={scrolled ? "text-white" : "text-black"}>
+          <Link
+            to="/auth/login"
+            className={scrolled ? "text-white" : "text-black"}
+          >
             <FaUser size={15} />
           </Link>
           <Link to="/cart" className={scrolled ? "text-white" : "text-black"}>
