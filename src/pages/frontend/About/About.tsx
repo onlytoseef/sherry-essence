@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import storeImage from "../../../assets/images/AboutSection/perfumeStore.svg";
 
 export default function About() {
   return (
@@ -42,8 +43,20 @@ export default function About() {
           </motion.p>
         </div>
       </div>
-      <div className="flex flex-col justify-center item-center ">
-        <div className="container"></div>
+      <div className="flex flex-col story-sec  py-15 bg-black  justify-center item-center ">
+        <h1 className="container text-5xl text-[#AB572D] story-sec   mx-auto text-center">
+          Our Story
+        </h1>
+        <p className="sm:w-[60vw] font-extralight p-5 text-white   text-center mx-auto">
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia
+          voluptate velit dignissimos totam numquam nostrum iure tempore porro
+          facere voluptas perferendis excepturi assumenda dolorem, recusandae
+          aut a sed quaerat, sapiente ut! Inventore eum amet nisi animi possimus
+          sint, ad sed soluta a vel at alias veniam tenetur iusto corporis et!
+        </p>
+      </div>
+      <div className="store-img">
+        <img src={storeImage} alt="" />
       </div>
     </>
   );

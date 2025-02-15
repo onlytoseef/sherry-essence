@@ -80,3 +80,10 @@ html {
     background-position: center;
     background-repeat: no-repeat;
 }
+
+.story-sec {
+    background-image: url(./assets/images/LandingPage/landingShadow.svg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
