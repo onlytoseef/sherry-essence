@@ -74,3 +74,9 @@ h3 {
 html {
     scroll-behavior: smooth;
 }
+
+.about-sec {
+    background-image: url(./assets/images/AboutSection/Madrid.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+}
