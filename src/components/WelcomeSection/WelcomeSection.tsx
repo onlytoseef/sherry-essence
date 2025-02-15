@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 export default function WelcomeSection() {
   return (
     <div className="relative md:h-[50vh] flex justify-center items-center overflow-hidden">
-      <div className="absolute inset-0 bg-[url('./assets/images/welcomeSection/welcome.svg')] bg-cover bg-center"></div>
+      <div className="absolute inset-0 bg-[url('./assets/images/welcomeSection/welcome.webp')] bg-cover bg-center"></div>
       <div className="absolute inset-0 bg-black opacity-80"></div>
 
       <div className="relative flex flex-col justify-center items-center text-center px-4 md:px-8 lg:px-16">

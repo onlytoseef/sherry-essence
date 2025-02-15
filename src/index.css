@@ -76,14 +76,29 @@ html {
 }
 
 .about-sec {
-    background-image: url(./assets/images/AboutSection/Madrid.svg);
-    background-position: center;
+    background-image: url(./assets/images/AboutSection/Madrid.webp);
     background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 .story-sec {
     background-image: url(./assets/images/LandingPage/landingShadow.svg);
     background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.card-sec {
+    background-image: url(./assets/images/LandingPage/landingShadow.svg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+footer {
+    background-image: url(./assets/images/LandingPage/landingShadow.svg);
+    background-position: right;
     background-size: cover;
     background-repeat: no-repeat;
 }

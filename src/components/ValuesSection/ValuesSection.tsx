@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import image from "../../assets/images/valuesSection/valueImage.svg";
+import image from "../../assets/images/valuesSection/valueImage.webp";
 
 export default function ValuesSection() {
   return (

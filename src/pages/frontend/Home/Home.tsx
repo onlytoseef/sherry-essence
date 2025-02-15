@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import bottle from "../../../assets/images/LandingPage/bottle.svg";
+import bottle from "../../../assets/images/LandingPage/bottle.webp";
 import ProductSection from "../../../components/ProductSection";
 import ValuesSection from "../../../components/ValuesSection";
 import WelcomeSection from "../../../components/WelcomeSection";

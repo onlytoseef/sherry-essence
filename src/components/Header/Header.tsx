@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 import { FaUser, FaShoppingCart } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,14 +7,11 @@ import { motion, AnimatePresence } from "framer-motion";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 50);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -22,9 +19,7 @@ const Header = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-50 shadow-xl  px-4 md:px-8 lg:px-16 p-2 sm:p-0 mx-auto backdrop-blur-lg transition-all duration-300 ${
-        scrolled ? "bg-transparent" : "bg-transparent"
-      }`}
+      className={`sticky top-0 z-50 shadow-xl px-4 md:px-8 lg:px-16 p-2 sm:p-0 mx-auto backdrop-blur-lg transition-all duration-300 bg-transparent`}
     >
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/">
@@ -34,31 +29,21 @@ const Header = () => {
         </Link>
 
         <div className="hidden md:flex space-x-6 items-center mx-auto">
-          <Link
-            to="/shop"
-            className={`font- ${scrolled ? "text-white" : "text-black"}`}
-          >
-            Shop
-          </Link>
-          <Link
-            to="/about"
-            className={`font- ${scrolled ? "text-white" : "text-black"}`}
-          >
-            About Us
-          </Link>
-          <Link
-            to="/service"
-            className={`font- ${scrolled ? "text-white" : "text-black"}`}
-          >
-            Services
-          </Link>
-          <Link
-            to="/contact"
-            className={`font- ${scrolled ? "text-white" : "text-black"}`}
-          >
-            Contact
-          </Link>
+          {["/shop", "/about", "/service", "/contact"].map((path, index) => (
+            <Link
+              key={index}
+              to={path}
+              className={`relative font-semibold transition-all duration-200 ${
+                scrolled ? "text-white" : "text-black"
+              } ${
+                location.pathname === path ? "border-b-2 border-orange-500" : ""
+              } hover:border-b-2 hover:border-orange-500 focus:border-b-2 focus:border-orange-500 pb-1`}
+            >
+              {path.replace("/", "").charAt(0).toUpperCase() + path.slice(2)}
+            </Link>
+          ))}
         </div>
+
         <div className="flex items-center space-x-4">
           <Link
             to="/auth/login"
@@ -86,6 +71,7 @@ const Header = () => {
           </div>
         </div>
       </div>
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -94,21 +80,21 @@ const Header = () => {
             exit={{ opacity: 0, y: -10 }}
             className="md:hidden bg-white shadow-lg p-4 absolute top-16 left-0 w-full"
           >
-            <Link to="/product" className="block p-2 text-black">
-              Product
-            </Link>
-            <Link to="/features" className="block p-2 text-black">
-              Features
-            </Link>
-            <Link to="/marketplace" className="block p-2 text-black">
-              Marketplace
-            </Link>
-            <Link to="/company" className="block p-2 text-black">
-              Company
-            </Link>
-            <Link to="/login" className="block p-2 text-black">
-              Log in
-            </Link>
+            {[
+              "/product",
+              "/features",
+              "/marketplace",
+              "/company",
+              "/login",
+            ].map((path, index) => (
+              <Link
+                key={index}
+                to={path}
+                className="block p-2 text-black hover:border-b-2 hover:border-orange-500 focus:border-b-2 focus:border-orange-500 pb-1"
+              >
+                {path.replace("/", "").charAt(0).toUpperCase() + path.slice(2)}
+              </Link>
+            ))}
           </motion.div>
         )}
       </AnimatePresence>
