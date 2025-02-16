@@ -4,12 +4,12 @@
 }
 
 .custom-menu .ant-menu-item:hover {
-    background-color: #ffd700;
+    background-color: orange;
 
 }
 
 .custom-menu .ant-menu-item-selected {
-    background-color: #b8860b !important;
+    background-color: orange !important;
 
     color: white !important;
 }
