@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
-import { FaUser, FaShoppingCart } from "react-icons/fa";
+import { FaUser, FaShoppingCart, FaSignOutAlt } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../store/store.ts";
+import { logoutUser } from "../../store/features/authSlice";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +23,12 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Handle Logout
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/auth/login");
+  };
 
   return (
     <nav
@@ -28,6 +41,7 @@ const Header = () => {
           </h1>
         </Link>
 
+        {/* Navigation Links */}
         <div className="hidden md:flex space-x-6 items-center mx-auto">
           {["/shop", "/about", "/service", "/contact"].map((path, index) => (
             <Link
@@ -44,16 +58,30 @@ const Header = () => {
           ))}
         </div>
 
+        {/* User & Cart Icons */}
         <div className="flex items-center space-x-4">
-          <Link
-            to="/auth/login"
-            className={scrolled ? "text-white" : "text-black"}
-          >
-            <FaUser size={15} />
-          </Link>
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className={scrolled ? "text-white" : "text-black"}
+              title="Logout"
+            >
+              <FaSignOutAlt size={18} />
+            </button>
+          ) : (
+            <Link
+              to="/auth/login"
+              className={scrolled ? "text-white" : "text-black"}
+              title="Login"
+            >
+              <FaUser size={18} />
+            </Link>
+          )}
           <Link to="/cart" className={scrolled ? "text-white" : "text-black"}>
-            <FaShoppingCart size={15} />
+            <FaShoppingCart size={18} />
           </Link>
+
+          {/* Mobile Menu Toggle */}
           <div className="md:hidden">
             <button onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? (
@@ -72,6 +100,7 @@ const Header = () => {
         </div>
       </div>
 
+      {/* Mobile Navigation Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -80,21 +109,27 @@ const Header = () => {
             exit={{ opacity: 0, y: -10 }}
             className="md:hidden bg-white shadow-lg p-4 absolute top-16 left-0 w-full"
           >
-            {[
-              "/product",
-              "/features",
-              "/marketplace",
-              "/company",
-              "/login",
-            ].map((path, index) => (
-              <Link
-                key={index}
-                to={path}
-                className="block p-2 text-black hover:border-b-2 hover:border-orange-500 focus:border-b-2 focus:border-orange-500 pb-1"
+            {["/product", "/features", "/marketplace", "/company"].map(
+              (path, index) => (
+                <Link
+                  key={index}
+                  to={path}
+                  className="block p-2 text-black hover:border-b-2 hover:border-orange-500 focus:border-b-2 focus:border-orange-500 pb-1"
+                >
+                  {path.replace("/", "").charAt(0).toUpperCase() +
+                    path.slice(2)}
+                </Link>
+              )
+            )}
+            {/* Show Logout Button in Mobile Menu */}
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left p-2 text-black hover:border-b-2 hover:border-orange-500 focus:border-b-2 focus:border-orange-500 pb-1"
               >
-                {path.replace("/", "").charAt(0).toUpperCase() + path.slice(2)}
-              </Link>
-            ))}
+                Logout
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

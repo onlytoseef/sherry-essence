@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaUser, FaEnvelope } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
+import { registerUser } from "../../store/features/authSlice";
 import RegisterLogo from "../../assets/images/loginScreen/register.svg";
 
 // Animation Variants
@@ -9,17 +12,19 @@ const containerVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
 };
-
 const formVariants = {
   hidden: { opacity: 0, scale: 0.9 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 0.3 } },
 };
-
-const inputVariants = {
-  focus: { scale: 1.05, transition: { duration: 0.2 } },
-};
+const inputVariants = { focus: { scale: 1.05, transition: { duration: 0.2 } } };
 
 const Register: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { loading, error, user } = useSelector(
+    (state: RootState) => state.auth || {}
+  );
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -34,13 +39,19 @@ const Register: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Registering...", formData);
+    dispatch(registerUser(formData));
   };
 
   return (
@@ -89,74 +100,34 @@ const Register: React.FC = () => {
             Register
           </motion.h2>
 
+          {error && <p className="text-red-500 text-center">{error}</p>}
+
           <form onSubmit={handleSubmit} className="space-y-6">
-            <motion.div
-              className="relative"
-              whileFocus="focus"
-              variants={inputVariants}
-            >
-              <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                name="firstName"
-                placeholder="First Name"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                required
-                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-700 text-white outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </motion.div>
-
-            <motion.div
-              className="relative"
-              whileFocus="focus"
-              variants={inputVariants}
-            >
-              <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Last Name"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                required
-                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-700 text-white outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </motion.div>
-
-            <motion.div
-              className="relative"
-              whileFocus="focus"
-              variants={inputVariants}
-            >
-              <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-700 text-white outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </motion.div>
-
-            <motion.div
-              className="relative"
-              whileFocus="focus"
-              variants={inputVariants}
-            >
-              <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-700 text-white outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </motion.div>
+            {["firstName", "lastName", "email", "password"].map(
+              (field, index) => (
+                <motion.div
+                  key={index}
+                  className="relative"
+                  whileFocus="focus"
+                  variants={inputVariants}
+                >
+                  {field === "email" ? (
+                    <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  ) : (
+                    <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  )}
+                  <input
+                    type={field === "password" ? "password" : "text"}
+                    name={field}
+                    placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                    value={formData[field as keyof typeof formData]}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-700 text-white outline-none focus:ring-2 focus:ring-orange-500"
+                  />
+                </motion.div>
+              )
+            )}
 
             <motion.button
               whileHover={{ scale: 1.05, backgroundColor: "#ff7300" }}
@@ -164,7 +135,7 @@ const Register: React.FC = () => {
               type="submit"
               className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg transition"
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </motion.button>
           </form>
 
