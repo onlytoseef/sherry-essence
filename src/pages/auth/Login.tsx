@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaLock, FaEnvelope } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../store/store";
+import { loginUser, logoutUser } from "../../store/features/authSlice";
 import LoginImage from "../../assets/images/loginScreen/login.svg";
 
 // Animation Variants
@@ -21,12 +24,22 @@ const inputVariants = {
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { user, loading, error } = useSelector(
+    (state: RootState) => state.auth
+  );
 
-  // Prevent scrolling when login screen is active
+  useEffect(() => {
+    if (user) {
+      navigate(user.role === "admin" ? "/admin" : "/");
+    }
+  }, [user, navigate]);
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "auto"; // Reset when unmounting
+      document.body.style.overflow = "auto";
     };
   }, []);
 
@@ -34,9 +47,17 @@ const Login: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Logging in...", formData);
+    dispatch(loginUser({ ...formData, navigate })) // ✅ Pass navigate
+      .unwrap()
+      .then((user) => {
+        navigate(user.role === "admin" ? "/admin" : "/");
+      })
+      .catch(() => {
+        dispatch(logoutUser());
+        alert("Invalid login credentials!");
+      });
   };
 
   return (
@@ -45,7 +66,6 @@ const Login: React.FC = () => {
       animate="visible"
       className="flex flex-col md:flex-row h-screen w-screen overflow-hidden bg-black"
     >
-      {/* Left Side Image + Text */}
       <motion.div
         variants={containerVariants}
         className="hidden md:flex md:w-1/2 justify-center items-center bg-gray-800 h-full"
@@ -70,10 +90,9 @@ const Login: React.FC = () => {
         </motion.div>
       </motion.div>
 
-      {/* Right Side Login Form */}
       <motion.div
         variants={formVariants}
-        className="flex flex-1  justify-center items-center p-6 h-full"
+        className="flex flex-1 justify-center items-center p-6 h-full"
       >
         <div className="bg-gray border-2 border-orange-500 p-8 rounded-lg shadow-lg w-full max-w-md">
           <motion.h2
@@ -84,6 +103,8 @@ const Login: React.FC = () => {
           >
             Login
           </motion.h2>
+
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <motion.div
@@ -125,12 +146,12 @@ const Login: React.FC = () => {
               whileTap={{ scale: 0.95 }}
               type="submit"
               className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg transition"
+              disabled={loading}
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </motion.button>
           </form>
 
-          {/* Register Link */}
           <p className="text-gray-400 text-center mt-4">
             Not having an account?{" "}
             <Link

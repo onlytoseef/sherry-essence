@@ -1,12 +1,11 @@
+export interface User {
+  uid: string;
+  email: string;
+  role: "admin" | "customer";
+}
+
 export interface AuthState {
   user: User | null;
   loading: boolean;
   error: string | null;
 }
-export type User = {
-  uid: string;
-  firstName: string;
-  lastName: string;
-  email: string | null;
-  role: "customer" | "admin";
-};

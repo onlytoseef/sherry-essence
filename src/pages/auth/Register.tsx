@@ -22,7 +22,7 @@ const Register: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { loading, error, user } = useSelector(
-    (state: RootState) => state.auth || {}
+    (state: RootState) => state.auth
   );
 
   const [formData, setFormData] = useState({
@@ -41,7 +41,7 @@ const Register: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate(user.role === "admin" ? "/admin" : "/");
     }
   }, [user, navigate]);
 
@@ -51,7 +51,7 @@ const Register: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(registerUser(formData));
+    dispatch(registerUser({ ...formData, navigate }));
   };
 
   return (

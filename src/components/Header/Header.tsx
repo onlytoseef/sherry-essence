@@ -14,7 +14,9 @@ const Header = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
+  // Select user state
   const user = useSelector((state: RootState) => state.auth.user);
+  const isAuthenticated = Boolean(user); // Ensure proper check
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,7 +62,8 @@ const Header = () => {
 
         {/* User & Cart Icons */}
         <div className="flex items-center space-x-4">
-          {user ? (
+          {/* Show Logout if user is logged in, else show Login */}
+          {isAuthenticated ? (
             <button
               onClick={handleLogout}
               className={scrolled ? "text-white" : "text-black"}
@@ -77,6 +80,7 @@ const Header = () => {
               <FaUser size={18} />
             </Link>
           )}
+
           <Link to="/cart" className={scrolled ? "text-white" : "text-black"}>
             <FaShoppingCart size={18} />
           </Link>
@@ -121,8 +125,9 @@ const Header = () => {
                 </Link>
               )
             )}
+
             {/* Show Logout Button in Mobile Menu */}
-            {user && (
+            {isAuthenticated && (
               <button
                 onClick={handleLogout}
                 className="block w-full text-left p-2 text-black hover:border-b-2 hover:border-orange-500 focus:border-b-2 focus:border-orange-500 pb-1"
