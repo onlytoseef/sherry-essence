@@ -3,12 +3,19 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 
 const ProtectedRoute = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
+  const { user, loading } = useSelector((state: RootState) => state.auth);
 
+  // Prevent route rendering while checking auth state
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // Redirect if user is not logged in
   if (!user) {
     return <Navigate to="/auth/login" replace />;
   }
 
+  // Redirect if user is not an admin
   if (user.role !== "admin") {
     return <Navigate to="/" replace />;
   }
