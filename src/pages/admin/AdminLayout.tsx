@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Layout, Menu, Button } from "antd";
+import { Layout, Menu, Button, Avatar, Dropdown } from "antd";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -9,6 +9,7 @@ import {
   SettingOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -39,9 +40,19 @@ const AdminLayout: React.FC = () => {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
 
+  const profileMenu = (
+    <Menu>
+      <Menu.Item key="profile">
+        <Link to="/admin/profile">Profile</Link>
+      </Menu.Item>
+      <Menu.Item key="logout" danger>
+        Logout
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
       <Sider
         collapsible
         collapsed={collapsed}
@@ -107,7 +118,6 @@ const AdminLayout: React.FC = () => {
           transition: "margin-left 0.3s",
         }}
       >
-        {/* Header */}
         <Header
           style={{
             background: "#fff",
@@ -127,10 +137,16 @@ const AdminLayout: React.FC = () => {
             onClick={() => setCollapsed(!collapsed)}
             style={{ fontSize: "18px" }}
           />
-          <h3 style={{ margin: 0 }}>Admin Dashboard</h3>
+
+          <Dropdown overlay={profileMenu} trigger={["hover", "click"]}>
+            <Avatar
+              size="large"
+              icon={<UserOutlined />}
+              style={{ cursor: "pointer" }}
+            />
+          </Dropdown>
         </Header>
 
-        {/* Content */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -148,7 +164,6 @@ const AdminLayout: React.FC = () => {
           </Content>
         </motion.div>
 
-        {/* Footer */}
         <Footer
           style={{
             textAlign: "center",
@@ -158,7 +173,7 @@ const AdminLayout: React.FC = () => {
             transition: "width 0.3s",
           }}
         >
-          Admin Panel ©2025
+          Sharalix ©2025 Developed By Toseef Rana
         </Footer>
       </Layout>
     </Layout>
