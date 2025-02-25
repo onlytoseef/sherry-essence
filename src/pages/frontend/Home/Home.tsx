@@ -62,7 +62,12 @@ export default function Home() {
               boxShadow: "0px 10px 20px rgba(255, 255, 255, 0.3)", // Glow effect on hover
             }}
           >
-            <img src={bottle} alt="Bottle" className="w-64 md:w-100" />
+            <img
+              src={bottle}
+              loading="lazy"
+              alt="Bottle"
+              className="w-64 md:w-100"
+            />
           </motion.div>
         </div>
       </div>
