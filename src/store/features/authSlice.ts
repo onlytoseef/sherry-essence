@@ -34,7 +34,7 @@ export const registerUser = createAsyncThunk(
       const userData: User = {
         uid: user.uid,
         email: user.email!,
-        role: "admin",
+        role: "customer",
       };
 
       await setDoc(doc(db, "users", user.uid), userData);
