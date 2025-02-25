@@ -23,7 +23,7 @@ const Products: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<any>(null);
 
-  const [productData, setProductData] = useState({
+  const defaultProductState = {
     name: "",
     description: "",
     originalPrice: 0,
@@ -33,7 +33,9 @@ const Products: React.FC = () => {
     stock: 0,
     category: "male",
     collection: "flora",
-  });
+  };
+
+  const [productData, setProductData] = useState(defaultProductState);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -55,31 +57,34 @@ const Products: React.FC = () => {
   };
 
   const resetForm = () => {
-    setProductData({
-      name: "",
-      description: "",
-      originalPrice: 0,
-      salePrice: 0,
-      image: "",
-      bottleSize: "",
-      stock: 0,
-      category: "male",
-      collection: "flora",
-    });
+    setProductData(defaultProductState);
   };
 
   const columns = [
     {
-      title: "Image",
+      title: "Images",
       dataIndex: "image",
       key: "image",
-      render: (image: string) => (
-        <img
-          src={image.split(",")[0]}
-          alt="Product"
-          style={{ width: 40, height: 40, borderRadius: "50%" }}
-        />
-      ),
+      render: (image: string) => {
+        const imageUrls = image.split(",").map((url) => url.trim()); // Handle multiple URLs
+        return (
+          <div className="flex gap-2">
+            {imageUrls.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt={`Product ${index + 1}`}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: "8px",
+                  objectFit: "cover",
+                }}
+              />
+            ))}
+          </div>
+        );
+      },
     },
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Name", dataIndex: "name", key: "name" },
@@ -146,6 +151,7 @@ const Products: React.FC = () => {
         rowKey="id"
       />
 
+      {/* Add Product Modal */}
       <Modal
         title="Add Product"
         open={isAddModalOpen}
@@ -153,100 +159,30 @@ const Products: React.FC = () => {
         onOk={handleAddProduct}
       >
         <Form layout="vertical">
-          <Form.Item label="Product Name">
-            <Input
-              value={productData.name}
-              onChange={(e) =>
-                setProductData({ ...productData, name: e.target.value })
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Description">
-            <Input
-              value={productData.description}
-              onChange={(e) =>
-                setProductData({ ...productData, description: e.target.value })
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Original Price">
-            <Input
-              type="number"
-              value={productData.originalPrice}
-              onChange={(e) =>
-                setProductData({
-                  ...productData,
-                  originalPrice: Number(e.target.value),
-                })
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Sale Price">
-            <Input
-              type="number"
-              value={productData.salePrice}
-              onChange={(e) =>
-                setProductData({
-                  ...productData,
-                  salePrice: Number(e.target.value),
-                })
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Image URLs (comma separated)">
-            <Input
-              value={productData.image}
-              onChange={(e) =>
-                setProductData({ ...productData, image: e.target.value })
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Bottle Size (ml)">
-            <Input
-              value={productData.bottleSize}
-              onChange={(e) =>
-                setProductData({ ...productData, bottleSize: e.target.value })
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Stock">
-            <Input
-              type="number"
-              value={productData.stock}
-              onChange={(e) =>
-                setProductData({
-                  ...productData,
-                  stock: Number(e.target.value),
-                })
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Category">
-            <Select
-              value={productData.category}
-              onChange={(value) =>
-                setProductData({ ...productData, category: value })
+          {Object.entries(productData).map(([key, value]) => (
+            <Form.Item
+              key={key}
+              label={key.replace(/([A-Z])/g, " $1")}
+              rules={
+                key === "stock"
+                  ? []
+                  : [{ required: true, message: `${key} is required` }]
               }
             >
-              <Option value="male">Male</Option>
-              <Option value="female">Female</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item label="Collection">
-            <Select
-              value={productData.collection}
-              onChange={(value) =>
-                setProductData({ ...productData, collection: value })
-              }
-            >
-              <Option value="flora">Flora</Option>
-              <Option value="lora">Lora</Option>
-              <Option value="aura">Aura</Option>
-            </Select>
-          </Form.Item>
+              <Input
+                placeholder={`Enter ${key}`}
+                type={typeof value === "number" ? "number" : "text"}
+                value={productData[key as keyof typeof productData]}
+                onChange={(e) =>
+                  setProductData({ ...productData, [key]: e.target.value })
+                }
+              />
+            </Form.Item>
+          ))}
         </Form>
       </Modal>
 
+      {/* Edit Product Modal */}
       <Modal
         title="Edit Product"
         open={isEditModalOpen}
@@ -254,9 +190,24 @@ const Products: React.FC = () => {
         onOk={handleEditProduct}
       >
         <Form layout="vertical">
-          {Object.keys(productData).map((key) => (
-            <Form.Item key={key} label={key.replace(/([A-Z])/g, " $1")}>
+          {Object.entries(productData).map(([key, _]) => (
+            <Form.Item
+              key={key}
+              label={key.replace(/([A-Z])/g, " $1")}
+              rules={
+                key === "stock"
+                  ? []
+                  : [{ required: true, message: `${key} is required` }]
+              }
+            >
               <Input
+                placeholder={`Enter ${key}`}
+                type={
+                  typeof productData[key as keyof typeof productData] ===
+                  "number"
+                    ? "number"
+                    : "text"
+                }
                 value={currentProduct?.[key] || ""}
                 onChange={(e) =>
                   setCurrentProduct({
