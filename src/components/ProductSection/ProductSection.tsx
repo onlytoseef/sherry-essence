@@ -1,54 +1,61 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { fetchProducts } from "../../store/features/productSlice";
+import { motion } from "framer-motion";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-const ProductSection: React.FC = () => {
-  const { products, loading } = useSelector(
-    (state: RootState) => state.products
-  );
+const ProductSection = () => {
+  const dispatch = useAppDispatch();
+  const { products, loading } = useAppSelector((state) => state.products);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   return (
-    <div className="flex justify-center bg-black items-center">
-      <div className="w-full max-w-6xl p-6 rounded-lg">
-        <h2 className="text-center text-orange-500 text-3xl font-semibold mb-6">
-          Best Selling Products
-        </h2>
+    <div className="bg-black">
+      <div className="container px-4 md:px-8 mx-auto lg:px-16 flex items-center justify-between bg-black">
+        <button className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-3 text-white rounded-full bg-black/60 hover:bg-black/80 transition-all">
+          <FaChevronLeft size={20} />
+        </button>
 
-        {loading ? (
-          <p className="text-center text-white">Loading products...</p>
-        ) : (
-          <div className="relative flex space-x-6 p-4 overflow-hidden">
-            {products.map((product: any) => {
-              const imageUrls =
-                typeof product.image === "string"
-                  ? (product.image as string)
-                      .split(",")
-                      .map((url: string) => url.trim())
-                  : [];
-
-              return (
-                <div
-                  key={product.id}
-                  className="min-w-[250px] bg-[#1C1C1C] p-6 rounded-lg text-white text-center"
-                >
+        <motion.div
+          className="flex gap-6 py-12 overflow-x-hidden scroll-smooth no-scrollbar px-4"
+          initial={{ x: "100%" }}
+          animate={{ x: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {loading ? (
+            <p className="text-center w-full text-white">Loading...</p>
+          ) : (
+            products.map((product) => (
+              <motion.div
+                key={product.id}
+                className="relative min-w-[270px] max-w-[270px] bg-white/10 text-white rounded-xl p-5 flex-shrink-0 overflow-hidden backdrop-blur-sm border border-white/10"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Link to={`/product/${product.id}`} className="block">
                   <img
-                    src={
-                      imageUrls.length > 0
-                        ? imageUrls[0]
-                        : "https://via.placeholder.com/150"
-                    } // Show first image
+                    src={product.image}
                     alt={product.name}
-                    className="mx-auto mb-4 w-40 h-40 object-cover rounded-lg"
+                    className="w-full h-56 object-cover rounded-lg"
                   />
-                  <h3 className="text-lg">{product.name}</h3>
-                  <p className="text-orange-500 text-sm">
-                    ${product.salePrice} | {product.bottleSize}ml
+                  <h3 className="mt-4 text-lg font-semibold">{product.name}</h3>
+                  <p className="text-orange-400 text-xl font-bold">
+                    ${product.salePrice}
                   </p>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                  <p className="text-gray-400">{product.bottleSize}ml</p>
+                </Link>
+              </motion.div>
+            ))
+          )}
+        </motion.div>
+
+        <button className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-3 bg-black/60 text-white rounded-full hover:bg-black/80 transition-all">
+          <FaChevronRight size={20} />
+        </button>
       </div>
     </div>
   );

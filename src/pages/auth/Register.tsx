@@ -85,7 +85,6 @@ const Register: React.FC = () => {
         </motion.div>
       </motion.div>
 
-      {/* Right Side Register Form */}
       <motion.div
         variants={formVariants}
         className="flex flex-1 justify-center items-center p-6 h-full"
@@ -97,7 +96,7 @@ const Register: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            Register
+            Create Account
           </motion.h2>
 
           {error && <p className="text-red-500 text-center">{error}</p>}

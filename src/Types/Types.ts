@@ -17,10 +17,11 @@ export interface Product {
   originalPrice: number;
   salePrice: number;
   image: string[];
-  bottleSize: string;
+  bottleSize: number;
   stock: number;
   category: "male" | "female";
   collection: "flora" | "lora" | "aura";
+  details: string;
 }
 
 export interface ProductState {
@@ -35,8 +36,9 @@ export interface ProductData {
   originalPrice: number;
   salePrice: number;
   image: any;
-  bottleSize: string;
+  bottleSize: number;
   stock: number;
   category: string;
   collection: string;
+  details: string;
 }

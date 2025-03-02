@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Layout, Menu, Button, Avatar, Dropdown } from "antd";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../store/features/authSlice";
 import {
   HomeOutlined,
   ShoppingCartOutlined,
@@ -38,14 +40,19 @@ const menuItems = [
 
 const AdminLayout: React.FC = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
+
+  const handleLogout = () => {
+    dispatch(logoutUser() as any);
+  };
 
   const profileMenu = (
     <Menu>
       <Menu.Item key="profile">
         <Link to="/admin/profile">Profile</Link>
       </Menu.Item>
-      <Menu.Item key="logout" danger>
+      <Menu.Item key="logout" danger onClick={handleLogout}>
         Logout
       </Menu.Item>
     </Menu>
@@ -167,13 +174,42 @@ const AdminLayout: React.FC = () => {
         <Footer
           style={{
             textAlign: "center",
+            background: "#000",
+            color: "#fff",
+            padding: "16px",
             position: "fixed",
             bottom: 0,
             width: `calc(100% - ${collapsed ? 50 : 200}px)`,
             transition: "width 0.3s",
           }}
         >
-          Sharalix ©2025 Developed By Toseef Rana
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <span>
+              © {new Date().getFullYear()} Sharalix. All Rights Reserved.
+            </span>
+            <a
+              href="https://linkedin.com/in/toseefrana"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: "#fff",
+                fontSize: "12px",
+                textDecoration: "none",
+                transition: "color 0.3s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#ff7f00")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#fff")}
+            >
+              Developed by Toseef Rana
+            </a>
+          </div>
         </Footer>
       </Layout>
     </Layout>

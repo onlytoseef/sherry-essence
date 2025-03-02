@@ -9,8 +9,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { RootState } from "../store";
-import { Product } from "../../Types/Types";
-import { ProductState } from "../../Types/Types";
+import { Product, ProductState } from "../../Types/Types";
 
 const initialState: ProductState = {
   products: [],
@@ -18,6 +17,7 @@ const initialState: ProductState = {
   error: null,
 };
 
+// Fetch Products
 export const fetchProducts = createAsyncThunk<
   Product[],
   void,
@@ -27,27 +27,39 @@ export const fetchProducts = createAsyncThunk<
     const querySnapshot = await getDocs(collection(db, "products"));
     const products: Product[] = querySnapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data(),
-    })) as Product[];
+      ...(doc.data() as Product),
+      originalPrice: Number(doc.data().originalPrice),
+      salePrice: Number(doc.data().salePrice),
+      stock: Number(doc.data().stock),
+      details: doc.data().details || "", // ✅ Ensure details field is included
+    }));
     return products;
   } catch (error) {
     return rejectWithValue((error as Error).message);
   }
 });
 
+// Add Product
 export const addProduct = createAsyncThunk<
   Product,
   Product,
   { state: RootState }
 >("products/addProduct", async (product, { rejectWithValue }) => {
   try {
-    const docRef = await addDoc(collection(db, "products"), product);
+    const docRef = await addDoc(collection(db, "products"), {
+      ...product,
+      originalPrice: Number(product.originalPrice),
+      salePrice: Number(product.salePrice),
+      stock: Number(product.stock),
+      details: product.details, // ✅ Include details field
+    });
     return { ...product, id: docRef.id };
   } catch (error) {
     return rejectWithValue((error as Error).message);
   }
 });
 
+// Edit Product
 export const editProduct = createAsyncThunk<
   Product,
   Product,
@@ -56,13 +68,20 @@ export const editProduct = createAsyncThunk<
   try {
     if (!product.id) throw new Error("Product ID is required for editing");
     const productRef = doc(db, "products", product.id);
-    await updateDoc(productRef, { ...product });
+    await updateDoc(productRef, {
+      ...product,
+      originalPrice: Number(product.originalPrice),
+      salePrice: Number(product.salePrice),
+      stock: Number(product.stock),
+      details: product.details, // ✅ Ensure details is updated
+    });
     return product;
   } catch (error) {
     return rejectWithValue((error as Error).message);
   }
 });
 
+// Delete Product
 export const deleteProduct = createAsyncThunk<
   string,
   string,
@@ -77,6 +96,7 @@ export const deleteProduct = createAsyncThunk<
   }
 });
 
+// Product Slice
 const productSlice = createSlice({
   name: "products",
   initialState,
@@ -95,19 +115,9 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(addProduct.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(addProduct.fulfilled, (state, action) => {
         state.loading = false;
         state.products.push(action.payload);
-      })
-      .addCase(addProduct.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-      .addCase(editProduct.pending, (state) => {
-        state.loading = true;
       })
       .addCase(editProduct.fulfilled, (state, action) => {
         state.loading = false;
@@ -116,20 +126,9 @@ const productSlice = createSlice({
         );
         if (index !== -1) state.products[index] = action.payload;
       })
-      .addCase(editProduct.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-      .addCase(deleteProduct.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.loading = false;
         state.products = state.products.filter((p) => p.id !== action.payload);
-      })
-      .addCase(deleteProduct.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
       });
   },
 });

@@ -7,66 +7,79 @@ import WelcomeSection from "../../../components/WelcomeSection";
 export default function Home() {
   return (
     <main>
-      <div className="bg-[black] hero h-screen flex justify-center items-center">
-        <div className="container px-4 md:px-8 lg:px-16 flex items-center justify-between">
-          {/* Left Side - Animated Text */}
-          <div className="left-side max-w-2xl text-white">
-            <motion.h1
-              className="text-6xl font-bold"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
+      <div className="bg-black hero h-screen flex justify-center items-center">
+        <div className="container px-4 md:px-8 lg:px-16 flex flex-col-reverse md:flex-row items-center justify-between">
+          <div className="left-side max-w-2xl text-white text-center md:text-left">
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0, y: 50 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 1, staggerChildren: 0.3 },
+                },
+              }}
             >
-              Elevate Your Spirit With
-            </motion.h1>
+              <motion.h1
+                className="text-4xl sm:text-5xl md:text-6xl font-bold"
+                variants={{
+                  hidden: { opacity: 0, y: 50 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+              >
+                Elevate Your Spirit With
+              </motion.h1>
 
-            <motion.h1
-              className="text-6xl font-bold"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-            >
-              Victory Scented Fragrances
-            </motion.h1>
+              <motion.h1
+                className="text-4xl sm:text-5xl md:text-6xl font-bold"
+                variants={{
+                  hidden: { opacity: 0, y: 50 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+              >
+                Victory Scented Fragrances
+              </motion.h1>
 
-            <motion.p
-              className="mt-4 text-lg"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: "easeOut", delay: 0.6 }}
-            >
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Dignissimos, porro.
-            </motion.p>
+              <motion.p
+                className="mt-4 text-base sm:text-lg"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+              >
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Dignissimos, porro.
+              </motion.p>
 
-            {/* Animated Button */}
-            <motion.button
-              className="bg-[#AB572D] p-2 rounded px-5 mt-20"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.5, ease: "easeOut", delay: 0.9 }}
-            >
-              Shop Now
-            </motion.button>
+              <motion.button
+                className="bg-[#AB572D] p-2 rounded px-5 mt-10 md:mt-20"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, ease: "easeOut", delay: 1 }}
+              >
+                Shop Now
+              </motion.button>
+            </motion.div>
           </div>
 
-          {/* Right Side - Smooth Bounce-in Bottle Animation */}
           <motion.div
-            className="right-side relative"
-            initial={{ opacity: 0, y: -200 }}
-            animate={{ opacity: 1, y: [0, -20, 0] }} // Simple bounce effect
-            transition={{ duration: 1.2, ease: "easeOut", bounce: 0.4 }}
-            whileHover={{
-              scale: 1.05,
-              boxShadow: "0px 10px 20px rgba(255, 255, 255, 0.3)", // Glow effect on hover
+            className="right-side relative flex justify-center"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: [0, -10, 0] }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut",
             }}
           >
             <img
               src={bottle}
               loading="lazy"
               alt="Bottle"
-              className="w-64 md:w-100"
+              className="w-40 sm:w-64 md:w-100"
             />
           </motion.div>
         </div>
