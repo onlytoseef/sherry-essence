@@ -25,14 +25,21 @@ export const fetchProducts = createAsyncThunk<
 >("products/fetchProducts", async (_, { rejectWithValue }) => {
   try {
     const querySnapshot = await getDocs(collection(db, "products"));
-    const products: Product[] = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...(doc.data() as Product),
-      originalPrice: Number(doc.data().originalPrice),
-      salePrice: Number(doc.data().salePrice),
-      stock: Number(doc.data().stock),
-      details: doc.data().details || "", // ✅ Ensure details field is included
-    }));
+    const products: Product[] = querySnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        originalPrice: Number(data.originalPrice),
+        salePrice: Number(data.salePrice),
+        stock: Number(data.stock),
+        details: data.details || "",
+        image:
+          typeof data.image === "string"
+            ? data.image.split(",").map((img) => img.trim())
+            : [],
+      } as Product;
+    });
     return products;
   } catch (error) {
     return rejectWithValue((error as Error).message);
@@ -51,7 +58,10 @@ export const addProduct = createAsyncThunk<
       originalPrice: Number(product.originalPrice),
       salePrice: Number(product.salePrice),
       stock: Number(product.stock),
-      details: product.details, // ✅ Include details field
+      details: product.details,
+      image: Array.isArray(product.image)
+        ? product.image.join(",")
+        : product.image,
     });
     return { ...product, id: docRef.id };
   } catch (error) {
@@ -73,7 +83,10 @@ export const editProduct = createAsyncThunk<
       originalPrice: Number(product.originalPrice),
       salePrice: Number(product.salePrice),
       stock: Number(product.stock),
-      details: product.details, // ✅ Ensure details is updated
+      details: product.details,
+      image: Array.isArray(product.image)
+        ? product.image.join(",")
+        : product.image,
     });
     return product;
   } catch (error) {
@@ -88,15 +101,13 @@ export const deleteProduct = createAsyncThunk<
   { state: RootState }
 >("products/deleteProduct", async (productId, { rejectWithValue }) => {
   try {
-    const productRef = doc(db, "products", productId);
-    await deleteDoc(productRef);
+    await deleteDoc(doc(db, "products", productId));
     return productId;
   } catch (error) {
     return rejectWithValue((error as Error).message);
   }
 });
 
-// Product Slice
 const productSlice = createSlice({
   name: "products",
   initialState,

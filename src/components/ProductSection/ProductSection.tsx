@@ -14,8 +14,11 @@ const ProductSection = () => {
   }, [dispatch]);
 
   return (
-    <div className="bg-black">
-      <div className="container px-4 md:px-8 mx-auto lg:px-16 flex items-center justify-between bg-black">
+    <div className="bg-black py-12">
+      <h2 className="text-center text-3xl font-bold text-orange-500">
+        Best Selling Products
+      </h2>
+      <div className="relative container mx-auto px-4 md:px-8 lg:px-16">
         <button className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-3 text-white rounded-full bg-black/60 hover:bg-black/80 transition-all">
           <FaChevronLeft size={20} />
         </button>
@@ -29,27 +32,36 @@ const ProductSection = () => {
           {loading ? (
             <p className="text-center w-full text-white">Loading...</p>
           ) : (
-            products.map((product) => (
-              <motion.div
-                key={product.id}
-                className="relative min-w-[270px] max-w-[270px] bg-white/10 text-white rounded-xl p-5 flex-shrink-0 overflow-hidden backdrop-blur-sm border border-white/10"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Link to={`/product/${product.id}`} className="block">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-56 object-cover rounded-lg"
-                  />
-                  <h3 className="mt-4 text-lg font-semibold">{product.name}</h3>
-                  <p className="text-orange-400 text-xl font-bold">
-                    ${product.salePrice}
-                  </p>
-                  <p className="text-gray-400">{product.bottleSize}ml</p>
-                </Link>
-              </motion.div>
-            ))
+            products.map((product) => {
+              const productImages = Array.isArray(product.image)
+                ? product.image
+                : product.image.split(",");
+              return (
+                <motion.div
+                  key={product.id}
+                  className="relative min-w-[270px] max-w-[270px] bg-black text-white rounded-xl p-5 flex-shrink-0 overflow-hidden border border-white/10"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Link to={`/product/${product.id}`} className="block">
+                    <img
+                      src={productImages[0]}
+                      alt={product.name}
+                      className="w-full h-64 object-cover rounded-lg"
+                    />
+                    <h3 className="mt-4 text-lg font-semibold text-center">
+                      {product.name}
+                    </h3>
+                    <p className="text-orange-400 text-xl font-bold text-center">
+                      ${product.salePrice}
+                    </p>
+                    <p className="text-gray-400 text-center">
+                      {product.bottleSize}ml
+                    </p>
+                  </Link>
+                </motion.div>
+              );
+            })
           )}
         </motion.div>
 

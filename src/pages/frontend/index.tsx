@@ -6,11 +6,13 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Services from "./Services/Services";
 import ProductDetails from "../../components/ProductDetails";
+import ScrollToTop from "../../utils/ScrollToTop";
 
 export default function Index() {
   return (
     <>
       <Header />
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/service" element={<Services />} />

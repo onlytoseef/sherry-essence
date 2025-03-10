@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main>
       <div className="bg-black hero h-screen flex justify-center items-center">
-        <div className="container px-4 md:px-8 lg:px-16 flex flex-col-reverse md:flex-row items-center justify-between">
+        <div className="container  card-bg px-4 md:px-8 lg:px-16 flex flex-col-reverse md:flex-row items-center justify-between">
           <div className="left-side max-w-2xl text-white text-center md:text-left">
             <motion.div
               initial="hidden"

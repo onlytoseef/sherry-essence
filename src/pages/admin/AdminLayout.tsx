@@ -38,6 +38,14 @@ const menuItems = [
   },
 ];
 
+const pageTitles: { [key: string]: string } = {
+  "/admin/home": "Home",
+  "/admin/orders": "Orders",
+  "/admin/products": "Products",
+  "/admin/settings": "Settings",
+  "/admin/profile": "Profile",
+};
+
 const AdminLayout: React.FC = () => {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -58,6 +66,8 @@ const AdminLayout: React.FC = () => {
     </Menu>
   );
 
+  const pageTitle = pageTitles[location.pathname] || "Dashboard";
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
@@ -66,6 +76,7 @@ const AdminLayout: React.FC = () => {
         breakpoint="md"
         collapsedWidth={50}
         onCollapse={(value) => setCollapsed(value)}
+        trigger={null} // Removes the default collapse trigger
         style={{
           position: "fixed",
           height: "100vh",
@@ -136,14 +147,20 @@ const AdminLayout: React.FC = () => {
             width: `calc(100% - ${collapsed ? 50 : 200}px)`,
             transition: "width 0.3s",
             zIndex: 1000,
+            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{ fontSize: "18px" }}
-          />
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{ fontSize: "18px" }}
+            />
+            <h3 style={{ margin: 0, fontWeight: "bold", fontSize: "18px" }}>
+              {pageTitle}
+            </h3>
+          </div>
 
           <Dropdown overlay={profileMenu} trigger={["hover", "click"]}>
             <Avatar
@@ -154,6 +171,16 @@ const AdminLayout: React.FC = () => {
           </Dropdown>
         </Header>
 
+        {/* Horizontal Line Below Header */}
+        <hr
+          style={{
+            marginTop: "64px",
+            border: "0",
+            height: "1px",
+            background: "#ddd",
+          }}
+        />
+
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -161,7 +188,7 @@ const AdminLayout: React.FC = () => {
         >
           <Content
             style={{
-              marginTop: 64,
+              marginTop: 10,
               padding: "20px",
               background: "#fff",
               minHeight: "calc(100vh - 128px)",
@@ -176,40 +203,39 @@ const AdminLayout: React.FC = () => {
             textAlign: "center",
             background: "#000",
             color: "#fff",
-            padding: "16px",
+            padding: window.innerWidth <= 768 ? "8px" : "12px",
             position: "fixed",
             bottom: 0,
             width: `calc(100% - ${collapsed ? 50 : 200}px)`,
             transition: "width 0.3s",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexWrap: "wrap",
+            whiteSpace: "nowrap",
+            fontSize: window.innerWidth <= 768 ? "10px" : "14px",
           }}
         >
-          <div
+          <span>
+            © {new Date().getFullYear()} Sharalix. All Rights Reserved.
+          </span>
+
+          <a
+            href="https://linkedin.com/in/toseefrana"
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "8px",
+              color: "#fff",
+              textDecoration: "none",
+              transition: "color 0.3s",
+              marginLeft: "10px",
+              fontSize: window.innerWidth <= 768 ? "10px" : "14px",
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#ff7f00")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#fff")}
           >
-            <span>
-              © {new Date().getFullYear()} Sharalix. All Rights Reserved.
-            </span>
-            <a
-              href="https://linkedin.com/in/toseefrana"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: "#fff",
-                fontSize: "12px",
-                textDecoration: "none",
-                transition: "color 0.3s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#ff7f00")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#fff")}
-            >
-              Developed by Toseef Rana
-            </a>
-          </div>
+            Developed by Toseef Rana
+          </a>
         </Footer>
       </Layout>
     </Layout>
