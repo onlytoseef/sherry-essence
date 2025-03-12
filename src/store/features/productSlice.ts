@@ -15,9 +15,9 @@ const initialState: ProductState = {
   products: [],
   loading: false,
   error: null,
+  loaded: false,
 };
 
-// Fetch Products
 export const fetchProducts = createAsyncThunk<
   Product[],
   void,
@@ -121,6 +121,7 @@ const productSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.products = action.payload;
+        state.loaded = true; // Set loaded to true after fetching
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;

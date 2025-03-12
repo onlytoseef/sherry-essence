@@ -7,6 +7,7 @@ import Footer from "../../components/Footer";
 import Services from "./Services/Services";
 import ProductDetails from "../../components/ProductDetails";
 import ScrollToTop from "../../utils/ScrollToTop";
+import Cart from "./Cart";
 
 export default function Index() {
   return (
@@ -19,6 +20,7 @@ export default function Index() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/cart" element={<Cart />} />
       </Routes>
       <Footer />
     </>

@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../store/store";
-import { useState, useEffect, useMemo } from "react";
-import { fetchProductById } from "../../store/productSlice"; // API call action
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import { addToCart } from "../../store/features/cartSlice";
+import toast from "react-hot-toast";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -11,23 +12,14 @@ const fadeIn = {
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const dispatch = useAppDispatch();
-
-  // Fetch product from Redux store
   const product = useAppSelector((state) =>
     state.products.products.find((p) => p.id === id)
   );
+  const dispatch = useAppDispatch();
 
-  // If product is not in Redux, fetch it from API
-  useEffect(() => {
-    if (!product) {
-      dispatch(fetchProductById(id));
-    }
-  }, [dispatch, id, product]);
+  if (!product)
+    return <p className="text-center text-white">Product not found</p>;
 
-  if (!product) return <p className="text-center text-white">Loading...</p>;
-
-  // Handle product images
   const productImages = useMemo(() => {
     if (!product.image) return [];
     return Array.isArray(product.image)
@@ -36,6 +28,13 @@ const ProductDetails = () => {
   }, [product.image]);
 
   const [selectedImage, setSelectedImage] = useState(productImages[0] || "");
+  const [quantity, setQuantity] = useState(1);
+
+  const handleAddToBag = () => {
+    const productWithQuantity = { ...product, quantity };
+    dispatch(addToCart(productWithQuantity));
+    toast.success(`${product.name} added to cart!`);
+  };
 
   return (
     <div className="bg-black text-white min-h-screen px-4 md:px-8 lg:px-16 py-10">
@@ -45,9 +44,7 @@ const ProductDetails = () => {
         animate="visible"
         variants={fadeIn}
       >
-        {/* Left: Product Image */}
         <div className="flex flex-col items-center">
-          {/* Large Image */}
           <motion.img
             key={selectedImage}
             src={selectedImage}
@@ -57,8 +54,38 @@ const ProductDetails = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
           />
-
-          {/* Thumbnails Below Description & Price */}
+          <div className="flex justify-center mt-4">
+            {productImages.map((img, index) => (
+              <span
+                key={index}
+                className={`w-3 h-3 mx-1 rounded-full cursor-pointer transition-all ${
+                  selectedImage === img ? "bg-orange-400" : "bg-gray-600"
+                }`}
+              ></span>
+            ))}
+          </div>
+        </div>
+        <motion.div variants={fadeIn}>
+          <motion.h1 className="text-3xl font-bold">{product.name}</motion.h1>
+          <motion.p className="text-gray-400 mt-2">
+            {product.description}
+          </motion.p>
+          <motion.div className="mt-4">
+            <p className="text-gray-400">
+              Bottle Size:{" "}
+              <span className="text-white font-semibold">
+                {product.bottleSize} ml
+              </span>
+            </p>
+          </motion.div>
+          <motion.div className="flex items-center gap-2 mt-4">
+            <span className="text-gray-500 line-through">
+              ${product.originalPrice}
+            </span>
+            <span className="text-orange-400 text-2xl font-bold">
+              ${product.salePrice}
+            </span>
+          </motion.div>
           <motion.div className="flex gap-2 justify-start mt-4">
             {productImages.map((img, index) => (
               <motion.img
@@ -75,36 +102,6 @@ const ProductDetails = () => {
               />
             ))}
           </motion.div>
-        </div>
-
-        {/* Right: Product Info */}
-        <motion.div variants={fadeIn}>
-          <motion.h1 className="text-3xl font-bold">{product.name}</motion.h1>
-          <motion.p className="text-gray-400 mt-2">
-            {product.description}
-          </motion.p>
-
-          {/* Bottle Size */}
-          <motion.div className="mt-4">
-            <p className="text-gray-400">
-              Bottle Size:{" "}
-              <span className="text-white font-semibold">
-                {product.bottleSize} ml
-              </span>
-            </p>
-          </motion.div>
-
-          {/* Price */}
-          <motion.div className="flex items-center gap-2 mt-4">
-            <span className="text-gray-500 line-through">
-              ${product.originalPrice}
-            </span>
-            <span className="text-orange-400 text-2xl font-bold">
-              ${product.salePrice}
-            </span>
-          </motion.div>
-
-          {/* Stock & Category */}
           <motion.div className="mt-4">
             <p className="text-gray-400">
               Stock:{" "}
@@ -119,18 +116,38 @@ const ProductDetails = () => {
               </span>
             </p>
           </motion.div>
-
-          {/* Add to Bag */}
+          <motion.div className="flex items-center gap-4 mt-6">
+            <div className="flex items-center border border-gray-600 px-4 py-2 rounded-md">
+              <button
+                className="text-lg px-2"
+                onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+              >
+                -
+              </button>
+              <span className="px-4">{quantity}</span>
+              <button
+                className="text-lg px-2"
+                onClick={() => setQuantity((prev) => prev + 1)}
+              >
+                +
+              </button>
+            </div>
+            <motion.button
+              className="border border-white px-6 py-3 rounded-xl font-semibold"
+              whileHover={{ scale: 1.05 }}
+            >
+              ❤️ Wish List
+            </motion.button>
+          </motion.div>
           <motion.button
-            className="bg-orange-500 hover:bg-orange-600 w-full px-6 py-3 rounded-xl font-semibold mt-6"
+            className="bg-white text-orange-600 hover:text-white hover:bg-orange-600 w-full px-6 py-3 rounded-xl font-semibold mt-6"
             whileHover={{ scale: 1.05 }}
+            onClick={handleAddToBag}
           >
             Add to Bag
           </motion.button>
         </motion.div>
       </motion.div>
-
-      {/* Product Details Section */}
       <motion.div className="mt-10 border-t border-gray-700 pt-6">
         <h2 className="text-xl font-semibold">Product Details</h2>
         <p className="text-gray-400 mt-2 leading-relaxed">

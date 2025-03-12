@@ -39,7 +39,7 @@ const Header = () => {
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/">
           <h1 className="text-5xl font-extrabold p-4 bg-gradient-to-r from-[#c47b3b] to-[#b87333] bg-clip-text text-transparent">
-            ShaRlix
+            Sharalix
           </h1>
         </Link>
 

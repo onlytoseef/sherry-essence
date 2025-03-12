@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updatePassword,
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
@@ -20,8 +21,16 @@ export const registerUser = createAsyncThunk(
     {
       email,
       password,
+      firstName,
+      lastName,
       navigate,
-    }: { email: string; password: string; navigate: (path: string) => void },
+    }: {
+      email: string;
+      password: string;
+      firstName: string;
+      lastName: string;
+      navigate: (path: string) => void;
+    },
     { rejectWithValue }
   ) => {
     try {
@@ -34,7 +43,9 @@ export const registerUser = createAsyncThunk(
       const userData: User = {
         uid: user.uid,
         email: user.email!,
-        role: "customer",
+        firstName,
+        lastName,
+        role: "admin",
       };
 
       await setDoc(doc(db, "users", user.uid), userData);
@@ -90,6 +101,21 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+export const updateUserPassword = createAsyncThunk(
+  "auth/updateUserPassword",
+  async ({ newPassword }: { newPassword: string }, { rejectWithValue }) => {
+    try {
+      if (!auth.currentUser) {
+        throw new Error("No user is currently logged in.");
+      }
+      await updatePassword(auth.currentUser, newPassword);
+      return "Password updated successfully!";
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -122,7 +148,21 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
-      });
+      })
+      .addCase(updateUserPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserPassword.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(
+        updateUserPassword.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
+      );
   },
 });
 

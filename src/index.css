@@ -5,6 +5,11 @@
     src: url(./assets/fonts/MisterDreamDemoRegular.ttf);
 }
 
+@font-face {
+    font-family: Wasted;
+    src: url(./assets/fonts/Wasted-Vindey.ttf);
+}
+
 p,
 div {
     font-family: "Outfit", serif;
@@ -15,7 +20,7 @@ div {
 h1,
 h2,
 h3 {
-    font-family: Mister;
+    font-family: Wasted;
 }
 
 .hero {

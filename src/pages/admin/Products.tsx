@@ -15,12 +15,14 @@ import {
   PlusOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
+import { toast } from "react-hot-toast";
 
 const { Option } = Select;
 
 const Products: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { products, loading } = useSelector(
+  const { products, loading, loaded } = useSelector(
+    // Add `loaded` here
     (state: RootState) => state.products
   );
 
@@ -28,6 +30,7 @@ const Products: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [form] = Form.useForm();
 
   const defaultProductState = {
     name: "",
@@ -35,36 +38,49 @@ const Products: React.FC = () => {
     details: "",
     originalPrice: 0,
     salePrice: 0,
-    image: "",
-    bottleSize: "",
     stock: 0,
-    category: "male",
-    collection: "flora",
+    image: "",
+    category: "",
+    collection: "",
   };
 
   const [productData, setProductData] = useState(defaultProductState);
 
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    if (!loaded) {
+      // Only fetch products if they haven't been loaded yet
+      dispatch(fetchProducts());
+    }
+  }, [dispatch, loaded]); // Add `loaded` to the dependency array
 
   const handleSubmit = async () => {
-    setIsProcessing(true);
-    if (isEditing) {
-      await dispatch(editProduct({ ...productData, id: currentProduct.id }));
-    } else {
-      await dispatch(addProduct(productData));
+    try {
+      await form.validateFields();
+      setIsProcessing(true);
+
+      if (isEditing) {
+        await dispatch(editProduct({ ...productData, id: currentProduct.id }));
+        toast.success("Product updated successfully!");
+      } else {
+        await dispatch(addProduct(productData));
+        toast.success("Product added successfully!");
+      }
+
+      setIsProcessing(false);
+      setIsModalOpen(false);
+      resetForm();
+    } catch (error) {
+      toast.error("Please fix the errors before submitting.");
     }
-    setIsProcessing(false);
-    setIsModalOpen(false);
-    resetForm();
   };
 
   const handleDeleteProduct = (id: string) => {
     dispatch(deleteProduct(id));
+    toast.success("Product deleted!");
   };
 
   const resetForm = () => {
+    form.resetFields();
     setProductData(defaultProductState);
     setIsEditing(false);
   };
@@ -74,27 +90,34 @@ const Products: React.FC = () => {
       title: "Images",
       dataIndex: "image",
       key: "image",
-      render: (image: string) => (
-        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-          {image.split(",").map((url, index) => (
-            <img
-              key={index}
-              src={url.trim()}
-              alt="Product"
-              style={{
-                width: "50px",
-                height: "50px",
-                borderRadius: "8px",
-                objectFit: "cover",
-                border: "2px solid #ddd",
-                padding: "3px",
-              }}
-            />
-          ))}
-        </div>
-      ),
+      render: (image: any) => {
+        const images = Array.isArray(image)
+          ? image
+          : image?.split(",").map((img) => img.trim()) || [];
+
+        if (images.length === 0) return <span>No Image</span>;
+
+        return (
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            {images.map((url: string, index: number) => (
+              <img
+                key={index}
+                src={url}
+                alt={`Product ${index + 1}`}
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "8px",
+                  objectFit: "cover",
+                }}
+              />
+            ))}
+          </div>
+        );
+      },
     },
     { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Description", dataIndex: "description", key: "description" },
     { title: "Details", dataIndex: "details", key: "details" },
     { title: "Stock", dataIndex: "stock", key: "stock" },
     { title: "Category", dataIndex: "category", key: "category" },
@@ -118,6 +141,7 @@ const Products: React.FC = () => {
               setProductData(record);
               setIsEditing(true);
               setIsModalOpen(true);
+              form.setFieldsValue(record);
             }}
           />
           <Button
@@ -141,21 +165,34 @@ const Products: React.FC = () => {
           fontWeight: "bold",
           padding: "12px 20px",
           fontSize: "16px",
-          borderRadius: "8px",
         }}
         icon={<PlusOutlined />}
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => {
+          setIsEditing(false);
+          setCurrentProduct(null);
+          setProductData(defaultProductState);
+          form.resetFields();
+          setIsModalOpen(true);
+        }}
       >
         Add Product
       </Button>
 
-      <div style={{ overflowX: "auto", marginTop: "20px" }}>
+      {/* Responsive Table Container */}
+      <div
+        style={{
+          overflowX: "auto",
+          marginTop: "20px",
+          fontSize: "14px", // Default font size
+        }}
+        className="responsive-table"
+      >
         <Table
           dataSource={products}
           columns={columns}
           loading={loading}
           rowKey="id"
-          scroll={{ x: "max-content" }} // Responsive table
+          scroll={{ x: "max-content" }} // Enable horizontal scrolling
           style={{
             border: "1px solid #ddd",
             borderRadius: "8px",
@@ -183,8 +220,14 @@ const Products: React.FC = () => {
         style={{ top: 50 }}
         bodyStyle={{ padding: "20px" }}
       >
-        <Form layout="vertical">
-          <Form.Item label="Name">
+        <Form layout="vertical" form={form}>
+          <Form.Item
+            label="Product Name"
+            name="name"
+            rules={[
+              { required: true, message: "Please input the product name!" },
+            ]}
+          >
             <Input
               value={productData.name}
               onChange={(e) =>
@@ -192,7 +235,17 @@ const Products: React.FC = () => {
               }
             />
           </Form.Item>
-          <Form.Item label="Description">
+
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[
+              {
+                required: true,
+                message: "Please input the product description!",
+              },
+            ]}
+          >
             <Input.TextArea
               value={productData.description}
               onChange={(e) =>
@@ -200,7 +253,14 @@ const Products: React.FC = () => {
               }
             />
           </Form.Item>
-          <Form.Item label="Details">
+
+          <Form.Item
+            label="Details"
+            name="details"
+            rules={[
+              { required: true, message: "Please input the product details!" },
+            ]}
+          >
             <Input.TextArea
               value={productData.details}
               onChange={(e) =>
@@ -208,9 +268,17 @@ const Products: React.FC = () => {
               }
             />
           </Form.Item>
-          <Form.Item label="Original Price">
+
+          <Form.Item
+            label="Original Price"
+            name="originalPrice"
+            rules={[
+              { required: true, message: "Please input the original price!" },
+            ]}
+          >
             <Input
               type="number"
+              min={0}
               value={productData.originalPrice}
               onChange={(e) =>
                 setProductData({
@@ -220,9 +288,17 @@ const Products: React.FC = () => {
               }
             />
           </Form.Item>
-          <Form.Item label="Sale Price">
+
+          <Form.Item
+            label="Sale Price"
+            name="salePrice"
+            rules={[
+              { required: true, message: "Please input the sale price!" },
+            ]}
+          >
             <Input
               type="number"
+              min={0}
               value={productData.salePrice}
               onChange={(e) =>
                 setProductData({
@@ -232,9 +308,17 @@ const Products: React.FC = () => {
               }
             />
           </Form.Item>
-          <Form.Item label="Stock">
+
+          <Form.Item
+            label="Stock"
+            name="stock"
+            rules={[
+              { required: true, message: "Please input the stock quantity!" },
+            ]}
+          >
             <Input
               type="number"
+              min={0}
               value={productData.stock}
               onChange={(e) =>
                 setProductData({
@@ -244,7 +328,17 @@ const Products: React.FC = () => {
               }
             />
           </Form.Item>
-          <Form.Item label="Image URL">
+
+          <Form.Item
+            label="Image URLs (comma-separated)"
+            name="image"
+            rules={[
+              {
+                required: true,
+                message: "Please input at least one image URL!",
+              },
+            ]}
+          >
             <Input
               value={productData.image}
               onChange={(e) =>
@@ -252,7 +346,12 @@ const Products: React.FC = () => {
               }
             />
           </Form.Item>
-          <Form.Item label="Category">
+
+          <Form.Item
+            label="Category"
+            name="category"
+            rules={[{ required: true, message: "Please select a category!" }]}
+          >
             <Select
               value={productData.category}
               onChange={(value) =>
@@ -261,6 +360,22 @@ const Products: React.FC = () => {
             >
               <Option value="male">Male</Option>
               <Option value="female">Female</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="Collection"
+            name="collection"
+            rules={[{ required: true, message: "Please select a collection!" }]}
+          >
+            <Select
+              value={productData.collection}
+              onChange={(value) =>
+                setProductData({ ...productData, collection: value })
+              }
+            >
+              <Option value="flora">Flora</Option>
+              <Option value="aura">Aura</Option>
             </Select>
           </Form.Item>
         </Form>

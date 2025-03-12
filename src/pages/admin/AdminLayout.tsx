@@ -4,6 +4,7 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../store/features/authSlice";
+import sharaLix from "../../assets/images/SL-White.svg";
 import {
   HomeOutlined,
   ShoppingCartOutlined,
@@ -91,7 +92,7 @@ const AdminLayout: React.FC = () => {
           style={{ color: "#fff", textAlign: "center", padding: "20px" }}
         >
           {!collapsed ? (
-            <h2 style={{ color: "#ff7f00" }}>Admin Panel</h2>
+            <img src={sharaLix} alt={sharaLix} />
           ) : (
             <HomeOutlined style={{ fontSize: "24px", color: "#ff7f00" }} />
           )}
@@ -163,11 +164,13 @@ const AdminLayout: React.FC = () => {
           </div>
 
           <Dropdown overlay={profileMenu} trigger={["hover", "click"]}>
-            <Avatar
-              size="large"
-              icon={<UserOutlined />}
-              style={{ cursor: "pointer" }}
-            />
+            <Link to="/admin/profile">
+              <Avatar
+                size="large"
+                icon={<UserOutlined />}
+                style={{ cursor: "pointer" }}
+              />
+            </Link>
           </Dropdown>
         </Header>
 
