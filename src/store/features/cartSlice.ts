@@ -8,6 +8,7 @@ interface CartItem extends Product {
 
 interface CartState {
   items: CartItem[];
+  totalPrice: number;
 }
 
 const loadCartFromLocalStorage = (): CartItem[] => {
@@ -19,8 +20,16 @@ const saveCartToLocalStorage = (items: CartItem[]) => {
   localStorage.setItem("cart", JSON.stringify(items));
 };
 
+const calculateTotalPrice = (items: CartItem[]): number => {
+  return items.reduce(
+    (total, item) => total + item.salePrice * item.quantity,
+    0
+  );
+};
+
 const initialState: CartState = {
   items: loadCartFromLocalStorage(),
+  totalPrice: calculateTotalPrice(loadCartFromLocalStorage()),
 };
 
 const cartSlice = createSlice({
@@ -33,8 +42,6 @@ const cartSlice = createSlice({
     ) => {
       const product = action.payload;
       const existingItem = state.items.find((item) => item.id === product.id);
-
-      // Extract the first image from the `image` field
       const firstImage =
         typeof product.image === "string"
           ? product.image.split(",")[0]?.trim() || ""
@@ -46,19 +53,19 @@ const cartSlice = createSlice({
         state.items.push({
           ...product,
           quantity: product.quantity,
-          firstImage, // Add the first image
+          firstImage,
         });
       }
 
+      state.totalPrice = calculateTotalPrice(state.items);
       saveCartToLocalStorage(state.items);
     },
-
     removeFromCart: (state, action: PayloadAction<string>) => {
       const productId = action.payload;
       state.items = state.items.filter((item) => item.id !== productId);
+      state.totalPrice = calculateTotalPrice(state.items);
       saveCartToLocalStorage(state.items);
     },
-
     updateQuantity: (
       state,
       action: PayloadAction<{ id: string; quantity: number }>
@@ -68,12 +75,13 @@ const cartSlice = createSlice({
 
       if (item) {
         item.quantity = quantity;
+        state.totalPrice = calculateTotalPrice(state.items);
         saveCartToLocalStorage(state.items);
       }
     },
-
     clearCart: (state) => {
       state.items = [];
+      state.totalPrice = 0;
       saveCartToLocalStorage(state.items);
     },
   },

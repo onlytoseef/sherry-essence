@@ -4,12 +4,14 @@ import { RootState } from "../../../store/store";
 import {
   removeFromCart,
   updateQuantity,
-  clearCart,
 } from "../../../store/features/cartSlice";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { items } = useSelector((state: RootState) => state.cart);
 
   const totalPrice = items.reduce(
@@ -26,11 +28,14 @@ const CartPage: React.FC = () => {
   };
 
   const handleCheckout = () => {
-    alert("Proceeding to checkout!");
-    dispatch(clearCart());
+    if (items.length === 0) {
+      toast.error("Your cart is empty!");
+      return;
+    }
+
+    navigate("/checkout", { state: { items } });
   };
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -93,7 +98,7 @@ const CartPage: React.FC = () => {
                   return (
                     <motion.div
                       key={item.id}
-                      className="flex items-center justify-between bg-gray-800 p-3 sm:p-4 rounded-lg"
+                      className="flex items-center justify-between bg-gray-800/50 backdrop-blur-md p-3 sm:p-4 rounded-lg border border-white/10"
                       variants={itemVariants}
                       initial="hidden"
                       animate="visible"
@@ -112,7 +117,7 @@ const CartPage: React.FC = () => {
                             {item.name}
                           </p>
                           <p className="text-xs sm:text-sm text-orange-400">
-                            ${item.salePrice}
+                            Rs {item.salePrice}
                           </p>
                           <p className="text-xs sm:text-sm text-gray-400 mt-1">
                             {item.description}
@@ -177,7 +182,7 @@ const CartPage: React.FC = () => {
               initial="hidden"
               animate="visible"
             >
-              <div className="bg-gray-800 p-4 sm:p-6 rounded-lg">
+              <div className="bg-gray-800/50 backdrop-blur-md p-4 sm:p-6 rounded-lg border border-white/10">
                 <h2 className="text-lg sm:text-xl font-bold text-orange-500 mb-3 sm:mb-4">
                   Order Summary
                 </h2>

@@ -46,7 +46,6 @@ export const fetchProducts = createAsyncThunk<
   }
 });
 
-// Add Product
 export const addProduct = createAsyncThunk<
   Product,
   Product,
@@ -69,7 +68,6 @@ export const addProduct = createAsyncThunk<
   }
 });
 
-// Edit Product
 export const editProduct = createAsyncThunk<
   Product,
   Product,
@@ -94,7 +92,6 @@ export const editProduct = createAsyncThunk<
   }
 });
 
-// Delete Product
 export const deleteProduct = createAsyncThunk<
   string,
   string,
@@ -121,7 +118,7 @@ const productSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.products = action.payload;
-        state.loaded = true; // Set loaded to true after fetching
+        state.loaded = true;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;

@@ -18,6 +18,10 @@ const Header = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const isAuthenticated = Boolean(user); // Ensure proper check
 
+  // Select cart items
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const cartItemCount = cartItems.length; // Get total number of items in cart
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -81,8 +85,17 @@ const Header = () => {
             </Link>
           )}
 
-          <Link to="/cart" className={scrolled ? "text-white" : "text-black"}>
+          {/* Cart Icon with Item Count */}
+          <Link
+            to="/cart"
+            className={`relative ${scrolled ? "text-white" : "text-black"}`}
+          >
             <FaShoppingCart size={18} />
+            {cartItemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartItemCount}
+              </span>
+            )}
           </Link>
 
           {/* Mobile Menu Toggle */}

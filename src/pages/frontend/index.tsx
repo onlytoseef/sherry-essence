@@ -8,6 +8,8 @@ import Services from "./Services/Services";
 import ProductDetails from "../../components/ProductDetails";
 import ScrollToTop from "../../utils/ScrollToTop";
 import Cart from "./Cart";
+import Checkout from "./Checkout";
+import TrackOrder from "./TrackOrder";
 
 export default function Index() {
   return (
@@ -21,6 +23,8 @@ export default function Index() {
         <Route path="/about" element={<About />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/track-order" element={<TrackOrder />} />
       </Routes>
       <Footer />
     </>

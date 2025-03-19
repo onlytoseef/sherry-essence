@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../store/store";
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
@@ -16,6 +16,7 @@ const ProductDetails = () => {
     state.products.products.find((p) => p.id === id)
   );
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   if (!product)
     return <p className="text-center text-white">Product not found</p>;
@@ -34,6 +35,11 @@ const ProductDetails = () => {
     const productWithQuantity = { ...product, quantity };
     dispatch(addToCart(productWithQuantity));
     toast.success(`${product.name} added to cart!`);
+  };
+
+  const handleBuyNow = () => {
+    const productWithQuantity = { ...product, quantity };
+    navigate("/checkout", { state: { product: productWithQuantity } });
   };
 
   return (
@@ -145,6 +151,13 @@ const ProductDetails = () => {
             onClick={handleAddToBag}
           >
             Add to Bag
+          </motion.button>
+          <motion.button
+            className="bg-orange-600 text-white w-full px-6 py-3 rounded-xl font-semibold mt-4"
+            whileHover={{ scale: 1.05 }}
+            onClick={handleBuyNow}
+          >
+            Buy Now
           </motion.button>
         </motion.div>
       </motion.div>
